@@ -69,7 +69,9 @@ app.post('/api/employees', upload.single('profilePicture'), async (req, res) => 
 
         await newEmployee.save();
 
-        res.status(201).json({sucess:true, message: 'Employee added successfully', employee: newEmployee });
+        const allEmployees = await Employee.find();
+
+        res.status(201).json({ success: true, message: 'Employee added successfully', employee: newEmployee, allEmployees });
     } catch (error) {
         console.error('Error adding employee:', error);
         res.status(500).json({ error: 'Internal Server Error' });
