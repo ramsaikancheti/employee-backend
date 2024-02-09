@@ -20,11 +20,11 @@ mongoose.connect(`${mongoDBAtlasIP}employee`);
 
 const employeeSchema = new mongoose.Schema({
     employeeId: { type: Number, required: true, unique: true },
-    employeeName: { type: String, required: true },
-    employeeAge: { type: String, required: true },
-    employeesalary: { type: Number, required: true},
-    employeeExp: { type: String, required: true },
-    profilePicture: { type: String },
+    name: { type: String, required: true },
+    age: { type: Number, required: true },
+    salary: { type: Number, required: true},
+    exp: { type: String, required: true },
+    photo: { type: String },
 });
 
 const Employee = mongoose.model('Employee', employeeSchema);
@@ -51,20 +51,20 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.post('/api/employees', upload.single('profilePicture'), async (req, res) => {
+app.post('/api/employees', upload.single('photo'), async (req, res) => {
     console.log(req);
     try {
-        const { employeeName, employeeAge, employeesalary, employeeExp } = req.body;
+        const { name, age, salary, exp } = req.body;
 
         const employeeId = await getNextEmployeeId();
 
         const newEmployee = new Employee({
             employeeId,
-            employeeName,
-            employeeAge,
-            employeesalary,
-            employeeExp,
-            profilePicture: req.file ? 'uploads/' + req.file.filename : "",
+            name,
+            age,
+            salary,
+            exp,
+            photo: req.file ? 'uploads/' + req.file.filename : "",
         });
 
         await newEmployee.save();
@@ -107,10 +107,10 @@ app.get('/api/getemployees/:employeeId', async (req, res) => {
     }
 });
  
-app.put('/api/employees/:employeeId', upload.single('profilePicture'), async (req, res) => {
+app.put('/api/employees/:employeeId', upload.single('photo'), async (req, res) => {
     try {
         const employeeId = req.params.employeeId;
-        const { employeeName, employeeAge, employeeExp } = req.body;
+        const { name, age, exp } = req.body;
 
          const employee = await Employee.findOne({ employeeId });
 
@@ -118,12 +118,12 @@ app.put('/api/employees/:employeeId', upload.single('profilePicture'), async (re
             return res.status(404).json({ error: 'Employee not found' });
         }
 
-         employee.employeeName = employeeName || employee.employeeName;
-        employee.employeeAge = employeeAge || employee.employeeAge;
-        employee.employeeExp = employeeExp || employee.employeeExp;
+         employee.ame = name || employee.name;
+        employee.age = age || employee.age;
+        employee.exp = exp || employee.exp;
 
          if (req.file) {
-            employee.profilePicture = req.file.filename;
+            employee.photo = req.file.filename;
         }
 
          await employee.save();
