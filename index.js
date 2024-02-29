@@ -110,30 +110,32 @@ app.get('/api/getemployees/:employeeId', async (req, res) => {
 app.put('/api/employees/:employeeId', upload.single('photo'), async (req, res) => {
     try {
         const employeeId = req.params.employeeId;
-        const { name, age, exp } = req.body;
+        const { name, age, exp, salary } = req.body;
 
-         const employee = await Employee.findOne({ employeeId });
+        const employee = await Employee.findOne({ employeeId });
 
         if (!employee) {
             return res.status(404).json({ error: 'Employee not found' });
         }
 
-         employee.ame = name || employee.name;
+        employee.name = name || employee.name;
         employee.age = age || employee.age;
         employee.exp = exp || employee.exp;
+        employee.salary = salary || employee.salary;
 
-         if (req.file) {
+        if (req.file) {
             employee.photo = req.file.filename;
         }
 
-         await employee.save();
+        await employee.save();
 
         res.status(200).json({ message: 'Employee updated successfully', employee });
     } catch (error) {
         console.error('Error updating employee:', error);
-        res.status(500).json({ success:false, message: 'Internal Server Error' });
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
+
 
 app.delete('/api/deleteemployee/:employeeId', async (req, res) => {
     try {
