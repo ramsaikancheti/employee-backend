@@ -124,7 +124,7 @@ app.put('/api/employees/:employeeId', upload.single('photo'), async (req, res) =
         employee.salary = salary || employee.salary;
 
         if (req.file) {
-            employee.photo = req.file.filename;
+             employee.photo = 'uploads/' + req.file.filename;
         }
 
         await employee.save();
@@ -135,6 +135,7 @@ app.put('/api/employees/:employeeId', upload.single('photo'), async (req, res) =
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
+
 
 
 app.delete('/api/deleteemployee/:employeeId', async (req, res) => {
